@@ -1,15 +1,13 @@
 World of Goo (WiiWare)
-<!-- [![Build Status]][actions] ![Progress] ![DOL Progress] ![RELs Progress] [![Discord Badge]][discord] -->
+[![Build Status]][actions] <!-- ![Progress] ![DOL Progress] ![RELs Progress] [![Discord Badge]][discord] -->
 =============
 
 <!--
 Replace with your repository's URL.
 -->
 
-<!---
-[Build Status]: https://github.com/Fancy2209/WOG-Wii-Ret/actions/workflows/build.yml/badge.svg
-[actions]: https://github.com/Fancy2209/WOG-Wii-Ret/actions/workflows/build.yml
--->
+[Build Status]: https://github.com/Fancy2209/wog/actions/workflows/build.yml/badge.svg
+[actions]: https://github.com/Fancy2209/wog/actions/workflows/build.yml
 
 <!---
 Code progress URL:
@@ -107,7 +105,7 @@ Building
   git clone https://github.com/my/repo.git
   ```
 
-- Copy your game's WAD image to `orig/WGOP`.
+- Copy your game's WAD image to `orig/[GAMEID]`.
 - Run extract.bat or extract.sh
   - After the initial build, the disc image can be deleted to save space.
 

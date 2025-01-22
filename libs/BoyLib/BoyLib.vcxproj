@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{2F817971-6C4B-49BC-939B-7AF8E5F50879}</ProjectGuid>
+    <RootNamespace>BoyLib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRTDBG_MAP_ALLOC;_CONSOLE;GOO_PLATFORM_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;GOO_PLATFORM_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Boundary.h" />
+    <ClInclude Include="BoyMath.h" />
+    <ClInclude Include="BoyUtil.h" />
+    <ClInclude Include="Circle.h" />
+    <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="Cloneable.h" />
+    <ClInclude Include="CrtDbgInc.h" />
+    <ClInclude Include="CrtDbgNew.h" />
+    <ClInclude Include="Function.h" />
+    <ClInclude Include="Function2D.h" />
+    <ClInclude Include="HeightBoundary.h" />
+    <ClInclude Include="IntersectionBoundary.h" />
+    <ClInclude Include="md5.h" />
+    <ClInclude Include="MemDbg.h" />
+    <ClInclude Include="MessageListener.h" />
+    <ClInclude Include="MessageSource.h" />
+    <ClInclude Include="Messenger.h" />
+    <ClInclude Include="PerfTimer.h" />
+    <ClInclude Include="Positionable.h" />
+    <ClInclude Include="Rect.h" />
+    <ClInclude Include="ReusableTickable.h" />
+    <ClInclude Include="ReusableTickableQueue.h" />
+    <ClInclude Include="ReusableTickableSet.h" />
+    <ClInclude Include="SinFunction2D.h" />
+    <ClInclude Include="SmoothTransitionFunction.h" />
+    <ClInclude Include="Tickable.h" />
+    <ClInclude Include="TickableQueue.h" />
+    <ClInclude Include="TickableSet.h" />
+    <ClInclude Include="UString.h" />
+    <ClInclude Include="UStringStream.h" />
+    <ClInclude Include="Vector2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="HeightBoundary.cpp" />
+    <ClCompile Include="IntersectionBoundary.cpp" />
+    <ClCompile Include="md5.c" />
+    <ClCompile Include="MemDbg.cpp" />
+    <ClCompile Include="Messenger.cpp" />
+    <ClCompile Include="PerfTimer.cpp" />
+    <ClCompile Include="Positionable.cpp" />
+    <ClCompile Include="Rect.cpp" />
+    <ClCompile Include="ReusableTickableQueue.cpp" />
+    <ClCompile Include="ReusableTickableSet.cpp" />
+    <ClCompile Include="SinFunction2D.cpp" />
+    <ClCompile Include="SmoothTransitionFunction.cpp" />
+    <ClCompile Include="TickableQueue.cpp" />
+    <ClCompile Include="TickableSet.cpp" />
+    <ClCompile Include="UString.cpp" />
+    <ClCompile Include="UStringStream.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

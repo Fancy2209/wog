@@ -1,0 +1,12 @@
+Debug
+Release
+.vs
+.vscode
+Backup
+irrKlang-1.1.0
+packages
+demo*/*.dll
+demo*/*.exe
+res/
+properties/
+stuff/

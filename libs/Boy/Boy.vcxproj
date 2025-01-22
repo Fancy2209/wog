@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{B45B83A3-9939-4F13-BA9C-A6A6EAC047C4}</ProjectGuid>
+    <RootNamespace>BoyFriend</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(VCInstallDir)/PlatformSDK/include;..;../ode-0.8/include;../../../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/include;../DXUT/Core;../SDL-1.2.12/include;../irrKlang-1.1.0/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRTDBG_MAP_ALLOC;_LIB;GOO_PLATFORM_WIN32;D3D_DEBUG_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4244;4996;4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(VCInstallDir)/PlatformSDK/include;..;../ode-0.8/include;../popcap13/source;../../../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/include;../DXUT/Core;../SDL-1.2.12/include;../irrKlang-1.1.0/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;GOO_PLATFORM_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\DXUT\Core\dxerr.cpp" />
+    <ClCompile Include="..\DXUT\Core\DXUT.cpp" />
+    <ClCompile Include="..\DXUT\Core\DXUTenum.cpp" />
+    <ClCompile Include="..\DXUT\Core\DXUTmisc.cpp" />
+    <ClCompile Include="AES.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Crypto.cpp" />
+    <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="GamePad.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ResourceGroup.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Storage.cpp" />
+    <ClCompile Include="WinD3DInterface.cpp" />
+    <ClCompile Include="WinEnvironment.cpp" />
+    <ClCompile Include="WinGamePad.cpp" />
+    <ClCompile Include="WinGraphics.cpp" />
+    <ClCompile Include="WinImage.cpp" />
+    <ClCompile Include="WinPersistenceLayer.cpp" />
+    <ClCompile Include="WinResourceLoader.cpp" />
+    <ClCompile Include="WinSound.cpp" />
+    <ClCompile Include="WinSoundPlayer.cpp" />
+    <ClCompile Include="WinStorage.cpp" />
+    <ClCompile Include="WinTriStrip.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\DXUT\Core\dxerr.h" />
+    <ClInclude Include="..\DXUT\Core\DXUT.h" />
+    <ClInclude Include="..\DXUT\Core\DXUTenum.h" />
+    <ClInclude Include="..\DXUT\Core\DXUTmisc.h" />
+    <ClInclude Include="AES.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Crypto.h" />
+    <ClInclude Include="Environment.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GamePad.h" />
+    <ClInclude Include="GamePadListener.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Image.h" />
+    <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MouseListener.h" />
+    <ClInclude Include="PersistenceLayer.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ResourceGroup.h" />
+    <ClInclude Include="ResourceLoader.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundPlayer.h" />
+    <ClInclude Include="Storage.h" />
+    <ClInclude Include="TriStrip.h" />
+    <ClInclude Include="Util.h" />
+    <ClInclude Include="WinD3DInterface.h" />
+    <ClInclude Include="WinEnvironment.h" />
+    <ClInclude Include="WinGamePad.h" />
+    <ClInclude Include="WinGraphics.h" />
+    <ClInclude Include="WinImage.h" />
+    <ClInclude Include="WinPersistenceLayer.h" />
+    <ClInclude Include="WinResourceLoader.h" />
+    <ClInclude Include="WinSound.h" />
+    <ClInclude Include="WinSoundPlayer.h" />
+    <ClInclude Include="WinStorage.h" />
+    <ClInclude Include="WinTriStrip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BoyLib\BoyLib.vcxproj">
+      <Project>{2f817971-6c4b-49bc-939b-7af8e5f50879}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\tinyxml\tinyxml_lib.vcxproj">
+      <Project>{ab583d4f-449b-45e6-926e-41fb0ef41cd6}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets" Condition="Exists('..\..\packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este projeto faz referência a pacotes do NuGet que não estão presentes neste computador. Use a Restauração de Pacotes do NuGet para baixá-los.  Para obter mais informações, consulte http://go.microsoft.com/fwlink/?LinkID=322105. O arquivo ausente é {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets'))" />
+  </Target>
+</Project>

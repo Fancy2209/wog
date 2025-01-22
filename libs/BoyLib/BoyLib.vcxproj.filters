@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="function">
+      <UniqueIdentifier>{d7d05b37-e706-443c-a0b6-554b3eaa05d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tickable">
+      <UniqueIdentifier>{e5d62860-f94d-4176-9d5d-2c19584d549d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="boundary">
+      <UniqueIdentifier>{df4f5c10-3e34-479b-9d2f-602bef4fa6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="messenger">
+      <UniqueIdentifier>{1e35d332-44ee-4f7d-94fc-37037d481c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="md5">
+      <UniqueIdentifier>{2ef07c3b-b6f0-4270-92b8-ae16cf350e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="perf">
+      <UniqueIdentifier>{93d34942-801c-478a-afc2-c47c5aae9eb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="unicode">
+      <UniqueIdentifier>{bcd94e4b-8f3f-43f2-b50c-ffa0064e771d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Function.h">
+      <Filter>function</Filter>
+    </ClInclude>
+    <ClInclude Include="Function2D.h">
+      <Filter>function</Filter>
+    </ClInclude>
+    <ClInclude Include="SinFunction2D.h">
+      <Filter>function</Filter>
+    </ClInclude>
+    <ClInclude Include="SmoothTransitionFunction.h">
+      <Filter>function</Filter>
+    </ClInclude>
+    <ClInclude Include="ReusableTickable.h">
+      <Filter>tickable</Filter>
+    </ClInclude>
+    <ClInclude Include="ReusableTickableQueue.h">
+      <Filter>tickable</Filter>
+    </ClInclude>
+    <ClInclude Include="ReusableTickableSet.h">
+      <Filter>tickable</Filter>
+    </ClInclude>
+    <ClInclude Include="Tickable.h">
+      <Filter>tickable</Filter>
+    </ClInclude>
+    <ClInclude Include="TickableQueue.h">
+      <Filter>tickable</Filter>
+    </ClInclude>
+    <ClInclude Include="TickableSet.h">
+      <Filter>tickable</Filter>
+    </ClInclude>
+    <ClInclude Include="Boundary.h">
+      <Filter>boundary</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>boundary</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightBoundary.h">
+      <Filter>boundary</Filter>
+    </ClInclude>
+    <ClInclude Include="IntersectionBoundary.h">
+      <Filter>boundary</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>boundary</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageListener.h">
+      <Filter>messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageSource.h">
+      <Filter>messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="Messenger.h">
+      <Filter>messenger</Filter>
+    </ClInclude>
+    <ClInclude Include="md5.h">
+      <Filter>md5</Filter>
+    </ClInclude>
+    <ClInclude Include="PerfTimer.h">
+      <Filter>perf</Filter>
+    </ClInclude>
+    <ClInclude Include="UString.h">
+      <Filter>unicode</Filter>
+    </ClInclude>
+    <ClInclude Include="UStringStream.h">
+      <Filter>unicode</Filter>
+    </ClInclude>
+    <ClInclude Include="BoyMath.h" />
+    <ClInclude Include="BoyUtil.h" />
+    <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="Cloneable.h" />
+    <ClInclude Include="CrtDbgInc.h" />
+    <ClInclude Include="CrtDbgNew.h" />
+    <ClInclude Include="MemDbg.h" />
+    <ClInclude Include="Positionable.h" />
+    <ClInclude Include="Vector2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SinFunction2D.cpp">
+      <Filter>function</Filter>
+    </ClCompile>
+    <ClCompile Include="SmoothTransitionFunction.cpp">
+      <Filter>function</Filter>
+    </ClCompile>
+    <ClCompile Include="ReusableTickableQueue.cpp">
+      <Filter>tickable</Filter>
+    </ClCompile>
+    <ClCompile Include="ReusableTickableSet.cpp">
+      <Filter>tickable</Filter>
+    </ClCompile>
+    <ClCompile Include="TickableQueue.cpp">
+      <Filter>tickable</Filter>
+    </ClCompile>
+    <ClCompile Include="TickableSet.cpp">
+      <Filter>tickable</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>boundary</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightBoundary.cpp">
+      <Filter>boundary</Filter>
+    </ClCompile>
+    <ClCompile Include="IntersectionBoundary.cpp">
+      <Filter>boundary</Filter>
+    </ClCompile>
+    <ClCompile Include="Rect.cpp">
+      <Filter>boundary</Filter>
+    </ClCompile>
+    <ClCompile Include="Messenger.cpp">
+      <Filter>messenger</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.c">
+      <Filter>md5</Filter>
+    </ClCompile>
+    <ClCompile Include="PerfTimer.cpp">
+      <Filter>perf</Filter>
+    </ClCompile>
+    <ClCompile Include="UString.cpp">
+      <Filter>unicode</Filter>
+    </ClCompile>
+    <ClCompile Include="UStringStream.cpp">
+      <Filter>unicode</Filter>
+    </ClCompile>
+    <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="MemDbg.cpp" />
+    <ClCompile Include="Positionable.cpp" />
+  </ItemGroup>
+</Project>

@@ -48,7 +48,9 @@ void Wog::preInitLoad()
 {;
 	Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Environment::instance()->getCryptoKey());
 	Environment::instance()->getResourceManager()->loadResourceGroup("bootstrap");
+	Environment::instance()->debugLog("loading \'bootstrap\' complete.\n");
 	Environment::instance()->getResourceManager()->loadResourceGroup("init");
+	Environment::instance()->debugLog("loading \'init\' complete.\n");
 	Environment::instance()->showSystemMouse(false);
 }
 

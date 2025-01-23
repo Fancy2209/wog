@@ -5,10 +5,10 @@ Release
 Backup
 irrKlang-1.1.0
 packages
-*.dll
-*.pdb
-*.exe
+**/*.dll
+**/*.pdb
+**/*.exe
 res/
 properties/
 stuff/
-*.vcxproj.user
+**/*.vcxproj.user

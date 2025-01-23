@@ -48,7 +48,7 @@ void Wog::destroy()
 }
 
 void Wog::preInitLoad()
-{;
+{
 	Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Environment::instance()->getCryptoKey());
 	Environment::instance()->getResourceManager()->loadResourceGroup("bootstrap");
 	Environment::instance()->getResourceManager()->loadResourceGroup("init");

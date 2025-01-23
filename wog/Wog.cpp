@@ -80,7 +80,7 @@ void Wog::init()
 
 void Wog::load()
 {
-	Environment::instance()->debugLog("loading game (version %s)...\n", mVersion);
+	Environment::instance()->debugLog("loading game (version %s)...\n", mVersion.c_str());
 	Environment::instance()->getResourceManager()->loadResourceGroup("common");
 	Environment::instance()->debugLog("loading \'common\' complete.\n");
 	// LevelFactory::instance()->loadLevel("MapWorldView", true);

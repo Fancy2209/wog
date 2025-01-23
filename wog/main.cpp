@@ -17,7 +17,8 @@ int main(int argc, char* argv[])
 		false, // fullscreen
 		"World of Goo", // window title
 		"pers2.dat", // persistence layer file name
-		KEY);
+		KEY // AES Key for assets, set to null to not use encryption like WoG 1.5
+	);
 
 	// start the main loop
 	Boy::Environment::instance()->startMainLoop();

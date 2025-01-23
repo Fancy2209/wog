@@ -99,10 +99,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LevelFactory.cpp" />
+    <ClCompile Include="PlayerProfileFactory.cpp" />
     <ClCompile Include="Wog.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LevelFactory.h" />
+    <ClInclude Include="PlayerProfileFactory.h" />
     <ClInclude Include="Wog.h" />
   </ItemGroup>
   <ItemGroup>

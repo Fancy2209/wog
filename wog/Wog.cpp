@@ -2,6 +2,10 @@
 
 #include <assert.h>
 #include <string>
+
+#include "PlayerProfileFactory.h"
+#include "LevelFactory.h"
+
 #include "Boy/Environment.h"
 #include "Boy/GamePad.h"
 #include "Boy/Graphics.h"
@@ -18,7 +22,6 @@ Wog::Wog()
 	BoyLib::Messenger::init();
 	// mModel = new Model();
 	// mController = new Controller();
-	mVersion = "1.3";
 	// mStatsAndAchivements = new StatsAndAchivements();
 }
 
@@ -48,9 +51,7 @@ void Wog::preInitLoad()
 {;
 	Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Environment::instance()->getCryptoKey());
 	Environment::instance()->getResourceManager()->loadResourceGroup("bootstrap");
-	Environment::instance()->debugLog("loading \'bootstrap\' complete.\n");
 	Environment::instance()->getResourceManager()->loadResourceGroup("init");
-	Environment::instance()->debugLog("loading \'init\' complete.\n");
 	Environment::instance()->showSystemMouse(false);
 }
 
@@ -62,9 +63,9 @@ void Wog::preInitdraw(Graphics *g)
 void Wog::init()
 {
 	Environment::instance()->sleep(500);
-	/*
 	PlayerProfileFactory::init();
 	LevelFactory::init();
+	/*
 	SceneFactory::init();
 	AnimationFactory::init();
 	BallFactory::init();
@@ -82,7 +83,7 @@ void Wog::init()
 
 void Wog::load()
 {
-	Environment::instance()->debugLog("loading game (version %s)...\n", mVersion.c_str());
+	Environment::instance()->debugLog("loading game...\n");
 	Environment::instance()->getResourceManager()->loadResourceGroup("common");
 	Environment::instance()->debugLog("loading \'common\' complete.\n");
 	// LevelFactory::instance()->loadLevel("MapWorldView", true);

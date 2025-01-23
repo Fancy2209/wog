@@ -37,7 +37,6 @@ private:
 	//Model *mModel;
 	//Controller *mController;
 	//WogRenderer *mRenderer;
-	std::string mVersion;
 	//StatsAndAchievements *mStatsAndAchivements;
 
 };

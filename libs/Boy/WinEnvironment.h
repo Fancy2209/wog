@@ -5,7 +5,7 @@
 #include "Keyboard.h"
 #include <map>
 #include "Mouse.h"
-#include "SDL.h"
+#include "SDL3/SDL.h"
 #include "WinGamePad.h"
 
 namespace Boy

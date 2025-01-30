@@ -10,7 +10,6 @@
 #include "Storage.h"
 
 #define USE_POPCAP
-#define GOO_PLATFORM_WIN32
 
 #if defined(GOO_PLATFORM_WIN32)
 	#include "WinEnvironment.h"

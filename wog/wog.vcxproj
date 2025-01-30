@@ -66,9 +66,9 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;d3dx9d.lib;irrKlang.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;d3dx9d.lib;irrKlang.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)\$(ProjectName)d.exe</OutputFile>
-      <AdditionalLibraryDirectories>../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/debug/lib/x86;../libs/SDL-1.2.12/lib;../libs/libcurl-7.13.1-ssl-zlib-ares/lib;../libs/irrKlang-1.1.0/lib/Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/debug/lib/x86;../libs/SDL3-3.2.0/lib/x86;../libs/libcurl-7.13.1-ssl-zlib-ares/lib;../libs/irrKlang-1.1.0/lib/Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -86,9 +86,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL.lib;d3dx9.lib;d3d9.lib;irrKlang.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL3.lib;d3dx9.lib;d3d9.lib;irrKlang.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(ProjectDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/release/lib/x86;../libs/SDL-1.2.12/lib;../libs/libcurl-7.13.1-ssl-zlib-ares/lib;../libs/irrKlang-1.1.0/lib/Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/release/lib/x86;../libs/SDL3-3.2.0/lib/x86;../libs/libcurl-7.13.1-ssl-zlib-ares/lib;../libs/irrKlang-1.1.0/lib/Win32-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

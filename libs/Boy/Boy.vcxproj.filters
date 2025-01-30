@@ -27,15 +27,6 @@
     <ClCompile Include="Crypto.cpp">
       <Filter>windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\DXUT\Core\DXUT.cpp">
-      <Filter>windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\DXUT\Core\DXUTenum.cpp">
-      <Filter>windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\DXUT\Core\DXUTmisc.cpp">
-      <Filter>windows</Filter>
-    </ClCompile>
     <ClCompile Include="WinD3DInterface.cpp">
       <Filter>windows</Filter>
     </ClCompile>
@@ -99,15 +90,6 @@
       <Filter>windows</Filter>
     </ClInclude>
     <ClInclude Include="Crypto.h">
-      <Filter>windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DXUT\Core\DXUT.h">
-      <Filter>windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DXUT\Core\DXUTenum.h">
-      <Filter>windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DXUT\Core\DXUTmisc.h">
       <Filter>windows</Filter>
     </ClInclude>
     <ClInclude Include="WinD3DInterface.h">

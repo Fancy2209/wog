@@ -52,7 +52,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(VCInstallDir)/PlatformSDK/include;..;../ode-0.8/include;../../../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/include;../DXUT/Core;../SDL-1.2.12/include;../irrKlang-1.1.0/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)/PlatformSDK/include;..;../ode-0.8/include;../../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/include;../DXUT/Core;../SDL3-3.2.0/include;../irrKlang-1.1.0/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CRTDBG_MAP_ALLOC;_LIB;GOO_PLATFORM_WIN32;D3D_DEBUG_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -67,7 +67,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(VCInstallDir)/PlatformSDK/include;..;../ode-0.8/include;../popcap13/source;../../../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/include;../DXUT/Core;../SDL-1.2.12/include;../irrKlang-1.1.0/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)/PlatformSDK/include;..;../ode-0.8/include;../popcap13/source;../../packages/Microsoft.DXSDK.D3DX.9.29.952.8/build/native/include;../DXUT/Core;../SDL3-3.2.0/include;../irrKlang-1.1.0/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;GOO_PLATFORM_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -77,10 +77,6 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\DXUT\Core\dxerr.cpp" />
-    <ClCompile Include="..\DXUT\Core\DXUT.cpp" />
-    <ClCompile Include="..\DXUT\Core\DXUTenum.cpp" />
-    <ClCompile Include="..\DXUT\Core\DXUTmisc.cpp" />
     <ClCompile Include="AES.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Crypto.cpp" />
@@ -106,10 +102,6 @@
     <ClCompile Include="WinTriStrip.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\DXUT\Core\dxerr.h" />
-    <ClInclude Include="..\DXUT\Core\DXUT.h" />
-    <ClInclude Include="..\DXUT\Core\DXUTenum.h" />
-    <ClInclude Include="..\DXUT\Core\DXUTmisc.h" />
     <ClInclude Include="AES.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Crypto.h" />

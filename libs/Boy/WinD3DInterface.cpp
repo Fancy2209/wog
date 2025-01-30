@@ -3,8 +3,7 @@
 #include <assert.h>
 #include "Boy/Mouse.h"
 #include "BoyLib/BoyUtil.h"
-#include "dxerr.h"
-#include "DXUT.h"
+#include "d3dx9math.h"
 #include "Environment.h"
 #include <fstream>
 #include "Game.h"
@@ -12,7 +11,7 @@
 #include "Keyboard.h"
 #include "PersistenceLayer.h"
 #include "ResourceManager.h"
-#include "SDL.h"
+#include <SDL3/SDL.h>
 #include "WinEnvironment.h"
 #include "WinImage.h"
 #include "WinTriStrip.h"
@@ -28,7 +27,11 @@ using namespace Boy;
 
 #include "BoyLib/CrtDbgNew.h"
 
-bool getPresentationParameters(D3DPRESENT_PARAMETERS &pp, int width, int height, bool windowed)
+static int gAltDown = false;
+static int gShiftDown = false;
+static int gControlDown = false;
+
+bool getPresentationParameters(D3DPRESENT_PARAMETERS &pp, int width, int height, bool windowed, unsigned int refreshRate, SDL_Window* window, IDirect3D9* d3dobject)
 {
 	pp.AutoDepthStencilFormat = D3DFMT_D16;
 	pp.BackBufferCount = 3;
@@ -37,8 +40,8 @@ bool getPresentationParameters(D3DPRESENT_PARAMETERS &pp, int width, int height,
 	pp.BackBufferHeight = height;
 	pp.EnableAutoDepthStencil = true;
 	pp.Flags = 0;
-	pp.FullScreen_RefreshRateInHz = 0;
-	pp.hDeviceWindow = GetActiveWindow();
+	pp.FullScreen_RefreshRateInHz = refreshRate;
+	pp.hDeviceWindow = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
 	pp.MultiSampleQuality = 0;
 	pp.MultiSampleType = D3DMULTISAMPLE_NONE;
 	pp.PresentationInterval = (windowed ? D3DPRESENT_INTERVAL_IMMEDIATE : D3DPRESENT_INTERVAL_DEFAULT);
@@ -50,14 +53,14 @@ bool getPresentationParameters(D3DPRESENT_PARAMETERS &pp, int width, int height,
 	{
 		D3DDISPLAYMODE mode;
 		D3DFORMAT format = pp.BackBufferFormat;
-		int modeCount = DXUTGetD3D9Object()->GetAdapterModeCount(D3DADAPTER_DEFAULT,format);
+		int modeCount = d3dobject->GetAdapterModeCount(D3DADAPTER_DEFAULT,format);
 		for (int i=0 ; i<modeCount ; i++)
 		{
-			DXUTGetD3D9Object()->EnumAdapterModes(D3DADAPTER_DEFAULT,format,i,&mode);
+			d3dobject->EnumAdapterModes(D3DADAPTER_DEFAULT,format,i,&mode);
 			if (mode.Width==pp.BackBufferWidth &&
 				mode.Height==pp.BackBufferHeight)
 			{
-				if (DXUTGetD3D9Object()->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, format, format, FALSE) == D3D_OK)
+				if (d3dobject->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, format, format, FALSE) == D3D_OK)
 				{
 					pp.FullScreen_RefreshRateInHz = mode.RefreshRate;
 				}
@@ -71,16 +74,6 @@ bool getPresentationParameters(D3DPRESENT_PARAMETERS &pp, int width, int height,
 
 	return true;
 }
-
-void CALLBACK askScreenSize(int *pWidth, int *pHeight, void* userContext)
-{
-	WinEnvironment *env = dynamic_cast<WinEnvironment*>(Environment::instance());
-	env->getDesiredScreenSize(pWidth,pHeight);
-}
-
-static int gAltDown = false;
-static int gShiftDown = false;
-static int gControlDown = false;
 
 Keyboard::Key getKey(UINT nChar)
 {
@@ -154,255 +147,6 @@ int getKeyMods()
 	return mods;
 }
 
-UINT gLastKeyDown;
-
-void CALLBACK keyPressed(UINT nChar, bool keyDown, bool altDown, void* userContext)
-{
-	WinEnvironment *env = dynamic_cast<WinEnvironment*>(Environment::instance());
-	env->processVirtualMouseEvents(nChar,keyDown);
-
-	gAltDown = altDown;
-	gShiftDown = DXUTIsKeyDown(VK_SHIFT);
-	gControlDown = DXUTIsKeyDown(VK_CONTROL);
-
-	Keyboard *kb = Environment::instance()->getKeyboard(0);
-	if (kb!=NULL)
-	{
-		int mods = getKeyMods();
-		Keyboard::Key key = getKey(nChar);
-		if (key!=Keyboard::KEY_UNKNOWN)
-		{
-			nChar = 0;
-		}
-
-		if (keyDown)
-		{
-			// if this is a modified key or if it has no unicode equivalent:
-			bool haveMods = mods!=Keyboard::KEYMOD_NONE;
-			bool noUnicode = (nChar==0);
-			if (haveMods || noUnicode)
-			{
-				kb->fireKeyDownEvent(nChar,key,(Keyboard::Modifiers)mods);
-				gLastKeyDown = nChar;
-//				envDebugLog("keyPressed: nChar=0x%x (%c)\n",nChar,nChar);
-			}
-		}
-		else
-		{
-			kb->fireKeyUpEvent(nChar, key, (Keyboard::Modifiers)mods);
-		}
-	}
-
-#ifdef _DEBUG
-	if (gControlDown && gAltDown && nChar=='D' && keyDown)
-	{
-		Environment *env = Environment::instance();
-		env->setDebugEnabled(!env->isDebugEnabled());
-	}
-#endif
-}
-
-void CALLBACK charPressed(wchar_t nChar, void* userContext)
-{
-	Keyboard *kb = Environment::instance()->getKeyboard(0);
-	if (kb!=NULL)
-	{
-		int mods = getKeyMods();
-		if (mods==Keyboard::KEYMOD_NONE && gLastKeyDown!=nChar)
-		{
-			kb->fireKeyDownEvent((wchar_t)nChar,Keyboard::KEY_UNKNOWN,(Keyboard::Modifiers)mods);
-		}
-	}
-//	envDebugLog("charPressed: nChar=0x%x (%c)\n",nChar,nChar);
-}
-
-bool CALLBACK modifyDeviceSettings(DXUTDeviceSettings* deviceSettings, const D3DCAPS9* caps, void* userContext)
-{
-//	envDebugLog("modifyDeviceSettings\n");
-    return true;
-}
-
-static bool gLastMouseLeftDown = false;
-static bool gLastMouseRightDown = false;
-static int gLastMouseX = -1;
-static int gLastMouseY = -1;
-void CALLBACK mouseEvent(bool leftDown, bool rightDown, bool middleDown, bool side1Down, bool side2Down, int wheelDelta, int x, int y, void* userContext)
-{
-	// if this is a mouse move event:
-	if (x!=gLastMouseX || y!=gLastMouseY)
-	{
-		gLastMouseX = x;
-		gLastMouseY = y;
-		Environment::instance()->getMouse(0)->fireMoveEvent((float)x,(float)y);
-	}
-	else if (gLastMouseLeftDown!=leftDown)
-	{
-		gLastMouseLeftDown = leftDown;
-		if (leftDown)
-		{
-			Environment::instance()->getMouse(0)->fireDownEvent(Mouse::BUTTON_LEFT,1);
-		}
-		else
-		{
-			Environment::instance()->getMouse(0)->fireUpEvent(Mouse::BUTTON_LEFT);
-		}
-	}
-	else if (wheelDelta!=0)
-	{
-		Environment::instance()->getMouse(0)->fireWheelEvent(wheelDelta);
-	}
-}
-
-LRESULT CALLBACK MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing, void* pUserContext)
-{
-	switch (uMsg)
-	{
-	case WM_MOVE:
-	case WM_MOVING:
-	case WM_WINDOWPOSCHANGING:
-	case WM_WINDOWPOSCHANGED:
-	case WM_GETMINMAXINFO:
-	case WM_NCPAINT:
-	case WM_ERASEBKGND:
-	case WM_PAINT:
-	case WM_MOUSEMOVE:
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_LBUTTONDBLCLK:
-	case WM_MBUTTONDOWN:
-	case WM_MBUTTONUP:
-	case WM_MBUTTONDBLCLK:
-	case WM_RBUTTONDOWN:
-	case WM_RBUTTONUP:
-	case WM_RBUTTONDBLCLK:
-	case WM_ACTIVATEAPP:
-	case WM_NCACTIVATE:
-	case WM_IME_SETCONTEXT:
-	case WM_IME_NOTIFY:
-	case WM_NCHITTEST:
-	case WM_KEYDOWN:
-	case WM_KEYUP:
-	case WM_CHAR:
-		break;
-	case WM_SETCURSOR:
-		break;
-	case WM_ACTIVATE:
-		/*
-		switch (wParam)
-		{
-		case WA_INACTIVE:
-			envDebugLog("window deactivated\n");
-			break;
-		case WA_ACTIVE:
-		case WA_CLICKACTIVE:
-			envDebugLog("window activated\n");
-			break;
-		}
-		*/
-		break;
-	case WM_SETFOCUS:
-		if (pUserContext!=NULL)
-		{
-			((Game*)pUserContext)->focusGained();
-		}
-		break;
-	case WM_KILLFOCUS:
-		if (pUserContext!=NULL)
-		{
-			((Game*)pUserContext)->focusLost();
-		}
-		break;
-	case WM_QUIT:
-		break;
-	case WM_CLOSE:
-		Boy::Environment::instance()->stopMainLoop();
-		break;
-	case WM_SYSCOMMAND:
-		/*
-		if (wParam==HTLEFT ||
-			wParam==HTRIGHT||
-			wParam==HTTOP ||
-			wParam==HTTOPLEFT||
-			wParam==HTTOPRIGHT ||
-			wParam==HTBOTTOM ||
-			wParam==HTBOTTOMLEFT ||
-			wParam==HTBOTTOMRIGHT)
-		*/
-		if (!Boy::Environment::instance()->isWindowResizable())
-		{
-			if (wParam==0xf001 || // left
-				wParam==0xf002 || // right
-				wParam==0xf003 || // top
-				wParam==0xf004 || // top left
-				wParam==0xf005 || // top right
-				wParam==0xf006 || // bottom
-				wParam==0xf007 || // bottom left
-				wParam==0xf008)   // bottom right
-			{
-				*pbNoFurtherProcessing = TRUE;
-			}
-		}
-//		envDebugLog("WM_SYSCOMMAND: uMsg=0x%x wParam=0x%x lParam=0x%x\n",uMsg,wParam,lParam);
-		break;
-	case WM_ENTERSIZEMOVE:
-//		envDebugLog("WM_ENTERSIZEMOVE: uMsg=0x%x wParam=0x%x lParam=0x%x\n",uMsg,wParam,lParam);
-		break;
-	case WM_NCLBUTTONDOWN:
-		if (wParam==HTZOOM)
-		{
-			*pbNoFurtherProcessing = TRUE;
-		}
-		break;
-	case WM_NCLBUTTONDBLCLK:
-		*pbNoFurtherProcessing = TRUE;
-//		envDebugLog("WM_NCLBUTTONDBLCLK: uMsg=0x%x wParam=0x%x lParam=0x%x\n",uMsg,wParam,lParam);
-		break;
-	case WM_SIZING:
-		*pbNoFurtherProcessing = TRUE;
-//		envDebugLog("WM_SIZING: uMsg=0x%x wParam=0x%x lParam=0x%x\n",uMsg,wParam,lParam);
-		break;
-	case WM_SIZE:
-//		envDebugLog("WM_SIZE: uMsg=0x%x wParam=0x%x lParam=0x%x\n",uMsg,wParam,lParam);
-		break;
-	case WM_NCCALCSIZE:
-//		envDebugLog("WM_NCCALCSIZE: uMsg=0x%x wParam=0x%x lParam=0x%x\n",uMsg,wParam,lParam);
-		break;
-	default:
-//		envDebugLog("MsgProc: uMsg=0x%x wParam=0x%x lParam=0x%x\n",uMsg,wParam,lParam);
-		break;
-	}
-    return 0;
-}
-
-HRESULT CALLBACK onCreateDevice(IDirect3DDevice9* d3dDevice, const D3DSURFACE_DESC* backBufferSurfaceDesc, void* userContext )
-{
-//	envDebugLog("onCreateDevice (windowed=%d w=%d h=%d)\n",DXUTIsWindowed(),backBufferSurfaceDesc->Width,backBufferSurfaceDesc->Height);
-    return S_OK;
-}
-
-void CALLBACK onDestroyDevice(void* userContext )
-{
-//	envDebugLog("onDestroyDevice\n");
-}
-
-void CALLBACK onLostDevice(void* userContext)
-{
-//	envDebugLog("onLostDevice (windowed=%d)\n",DXUTIsWindowed());
-	WinD3DInterface *inter = (WinD3DInterface*)userContext;
-	inter->handleLostDevice();
-//	DXUTGetD3D9Device()->Reset(&mPresentationParameters);
-}
-
-HRESULT CALLBACK onResetDevice(IDirect3DDevice9* d3dDevice, const D3DSURFACE_DESC* backBufferSurfaceDesc, void* userContext)
-{
-	assert(d3dDevice==DXUTGetD3D9Device());
-//	envDebugLog("onResetDevice (windowed=%d w=%d h=%d)\n",DXUTIsWindowed(),backBufferSurfaceDesc->Width,backBufferSurfaceDesc->Height);
-	WinD3DInterface *inter = (WinD3DInterface*)userContext;
-
-	inter->handleResetDevice();
-    return S_OK;
-}
-
 WinD3DInterface::WinD3DInterface(Game *game, int width, int height, const char *title, bool windowed, unsigned int refreshRate)
 {
 	// reset some members:
@@ -410,47 +154,33 @@ WinD3DInterface::WinD3DInterface(Game *game, int width, int height, const char *
 
 	// remember the game:
 	mGame = game;
-
-	// register callbacks:
-    DXUTSetCallbackD3D9DeviceCreated(onCreateDevice);
-    DXUTSetCallbackD3D9DeviceReset(onResetDevice,this);
-    DXUTSetCallbackD3D9DeviceLost(onLostDevice,this);
-    DXUTSetCallbackD3D9DeviceDestroyed(onDestroyDevice);
-    DXUTSetCallbackMsgProc(MsgProc,game);
-	DXUTSetCallbackKeyboard(keyPressed);
-	DXUTSetCallbackChar(charPressed);
-	DXUTSetCallbackMouse(mouseEvent, true);
-	DXUTSetCallbackAskScreenSize(askScreenSize,this);
-
-    // initialize:
-    DXUTInit();
-	DXUTSetHotkeyHandling(true,false,false);
-
-	// set up the cursor
-    DXUTSetCursorSettings(true, false);
+	
+	// initialize:
+	SDL_Init(SDL_INIT_VIDEO);
 
 	// create window:
-	DXUTDeviceSettings settings = DXUTGetDeviceSettings();
-	settings.d3d9.BehaviorFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED;
-	getPresentationParameters(settings.d3d9.pp,width,height,windowed);
-	settings.d3d9.pp.FullScreen_RefreshRateInHz = refreshRate;
-	if (windowed)
-	{
-		Boy::UString unicodeTitle(title);
-		DXUTCreateWindow(unicodeTitle.wc_str());
-	}
-	DXUTCreateDeviceFromSettings(&settings);
+	mTitle = title;
+	mWindow = SDL_CreateWindow(mTitle.c_str(), width, height, windowed ? SDL_WINDOW_RESIZABLE|SDL_WINDOW_HIGH_PIXEL_DENSITY : SDL_WINDOW_RESIZABLE|SDL_WINDOW_HIGH_PIXEL_DENSITY|SDL_WINDOW_FULLSCREEN);
 
 	// initialize d3d:
+	//mRenderer = SDL_CreateRenderer(mWindow, "direct3d");
+	mD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
+	D3DPRESENT_PARAMETERS pp;
+	SDL_DisplayMode DM;
+	getPresentationParameters(pp, SDL_GetDesktopDisplayMode(1)->w, SDL_GetDesktopDisplayMode(1)->h, windowed, refreshRate, mWindow, mD3D9);
+	
+	mD3D9->CreateDevice(
+		D3DADAPTER_DEFAULT, 
+		D3DDEVTYPE_HAL, 
+		(HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(mWindow), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL), 
+		D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED,
+		&pp,
+		&mD3D9Device);
 	initD3D();
 
 	// create the vertex buffer to be used 
 	// for drawing subrects of images:
 	mVertexBuffer = createVertexBuffer(4);
-
-	// set the window title:
-	mTitle = title;
-	SDL_WM_SetCaption(mTitle.c_str(), NULL);
 
 	// clearing params:
 	mClearZ = PROJECTION_Z_FAR;
@@ -459,23 +189,29 @@ WinD3DInterface::WinD3DInterface(Game *game, int width, int height, const char *
 
 WinD3DInterface::~WinD3DInterface()
 {
-	DXUTSetCallbackMsgProc(MsgProc,NULL); // game is NULL now
-	DXUTShutdown();
+	mD3D9Device->Release();
+	mD3D9->Release();
+	SDL_DestroyWindow(mWindow);
+	SDL_Quit();
 }
 
 int WinD3DInterface::getWidth()
 {
-	return DXUTGetWindowWidth();
+	int w;
+	SDL_GetWindowSizeInPixels(mWindow, &w, NULL);
+	return w;
 }
 
 int WinD3DInterface::getHeight()
 {
-	return DXUTGetWindowHeight();
+	int h;
+	SDL_GetWindowSizeInPixels(mWindow, NULL, &h);
+	return h;
 }
 
 bool WinD3DInterface::isWindowed()
 {
-	return DXUTIsWindowed();
+	return !(SDL_GetWindowFlags(mWindow) & SDL_WINDOW_FULLSCREEN);
 }
 /*
 void WinD3DInterface::toggleFullScreen(bool toggle)
@@ -494,7 +230,7 @@ void WinD3DInterface::toggleFullScreen(bool toggle)
 */
 bool WinD3DInterface::beginScene()
 {
-	HRESULT hr = DXUTGetD3D9Device()->TestCooperativeLevel();
+	HRESULT hr = mD3D9Device->TestCooperativeLevel();
 	if (hr!=S_OK)
 	{
 		handleError(hr);
@@ -504,7 +240,7 @@ bool WinD3DInterface::beginScene()
 	// set the rendering flag:
 	mRendering = true;
 
-	hr = DXUTGetD3D9Device()->Clear(
+	hr = mD3D9Device->Clear(
 		0, // num rects to clear
 		NULL, // rects
 		D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 
@@ -514,12 +250,12 @@ bool WinD3DInterface::beginScene()
 	if(FAILED(hr)) return false;
 
 	// let the rendering begin...
-	hr = DXUTGetD3D9Device()->BeginScene();
+	hr = mD3D9Device->BeginScene();
 	if(FAILED(hr)) return false;
 
 	D3DXMATRIX identity;
 	D3DXMatrixIdentity(&identity);
-	DXUTGetD3D9Device()->SetTransform(D3DTS_WORLD,&identity);
+	mD3D9Device->SetTransform(D3DTS_WORLD,&identity);
 
     D3DXMATRIX matView;    // the view transform matrix
 
@@ -532,7 +268,7 @@ bool WinD3DInterface::beginScene()
 		&D3DXVECTOR3 (w2, h2, 0),		// the look-at position
 		&D3DXVECTOR3 (0,  -1,  0));		// the up direction
 
-    DXUTGetD3D9Device()->SetTransform(D3DTS_VIEW, &matView);    // set the view transform to matView
+    mD3D9Device->SetTransform(D3DTS_VIEW, &matView);    // set the view transform to matView
 
     D3DXMATRIX matProjection;     // the projection transform matrix
 
@@ -542,16 +278,16 @@ bool WinD3DInterface::beginScene()
 		(FLOAT)PROJECTION_Z_NEAR,
 		(FLOAT)PROJECTION_Z_FAR);
 
-    DXUTGetD3D9Device()->SetTransform(D3DTS_PROJECTION, &matProjection);    // set the projection
+    mD3D9Device->SetTransform(D3DTS_PROJECTION, &matProjection);    // set the projection
 
 	// set some default state stuff:
-	DXUTGetD3D9Device()->SetRenderState(D3DRS_ALPHATESTENABLE, true);
-	DXUTGetD3D9Device()->SetRenderState(D3DRS_ALPHAREF, 1);
-	DXUTGetD3D9Device()->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-	DXUTGetD3D9Device()->SetRenderState(D3DRS_COLORVERTEX, true);
-	DXUTGetD3D9Device()->SetRenderState(D3DRS_BLENDOP,D3DBLENDOP_ADD);	
-	DXUTGetD3D9Device()->SetRenderState(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
-	DXUTGetD3D9Device()->SetRenderState(D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA);
+	mD3D9Device->SetRenderState(D3DRS_ALPHATESTENABLE, true);
+	mD3D9Device->SetRenderState(D3DRS_ALPHAREF, 1);
+	mD3D9Device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	mD3D9Device->SetRenderState(D3DRS_COLORVERTEX, true);
+	mD3D9Device->SetRenderState(D3DRS_BLENDOP,D3DBLENDOP_ADD);	
+	mD3D9Device->SetRenderState(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
+	mD3D9Device->SetRenderState(D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA);
 
 	return true;
 }
@@ -562,10 +298,10 @@ void WinD3DInterface::endScene()
 	mRendering = false;
 
 	// end of rendering:
-	DXUTGetD3D9Device()->EndScene();
+	mD3D9Device->EndScene();
 
 	//Show the results
-	HRESULT hr = DXUTGetD3D9Device()->Present(NULL,NULL,NULL,NULL);
+	HRESULT hr = mD3D9Device->Present(NULL,NULL,NULL,NULL);
 	handleError(hr);
 }
 
@@ -581,8 +317,8 @@ void WinD3DInterface::handleError(HRESULT hr)
 		break;
 	case D3DERR_DEVICENOTRESET:
 		// this is a hack, but it works:
-		DXUTToggleFullScreen();
-		DXUTToggleFullScreen();
+		//DXUTToggleFullScreen();
+		//DXUTToggleFullScreen();
 		// end of hack
 		SDL_Delay(100);
 		break;
@@ -598,15 +334,15 @@ void WinD3DInterface::drawImage(IDirect3DTexture9 *tex)
 	assert(mRendering);
 
 	// bind to image's vertex buffer:
-	HRESULT hr = DXUTGetD3D9Device()->SetStreamSource(0, mVertexBuffer, 0, sizeof(BoyVertex));
+	HRESULT hr = mD3D9Device->SetStreamSource(0, mVertexBuffer, 0, sizeof(BoyVertex));
 	if(FAILED(hr)) return;
 
 	// set texture:
-	hr = DXUTGetD3D9Device()->SetTexture(0,tex);
+	hr = mD3D9Device->SetTexture(0,tex);
 	if(FAILED(hr)) return;
 
 	// render from vertex buffer:
-	hr = DXUTGetD3D9Device()->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	hr = mD3D9Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	if(FAILED(hr)) return;
 }
 
@@ -730,15 +466,15 @@ void WinD3DInterface::drawTriStrip(WinTriStrip *strip)
 	vb->Unlock();
 
 	// bind to tristrip's vertex buffer:
-	hr = DXUTGetD3D9Device()->SetStreamSource(0, vb, 0, sizeof(BoyVertex));
+	hr = mD3D9Device->SetStreamSource(0, vb, 0, sizeof(BoyVertex));
 	if(FAILED(hr)) return;
 
 	// set texture to NULL:
-	hr = DXUTGetD3D9Device()->SetTexture(0,NULL);
+	hr = mD3D9Device->SetTexture(0,NULL);
 	if(FAILED(hr)) return;
 
 	// render from vertex buffer:
-	hr = DXUTGetD3D9Device()->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, strip->mVertexCount-2);
+	hr = mD3D9Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, strip->mVertexCount-2);
 	if(FAILED(hr)) return;
 
 	// release the vertex buffer:
@@ -780,15 +516,15 @@ void WinD3DInterface::drawLine(int x0, int y0, int x1, int y1, Color color)
 	vb->Unlock();
 
 	// bind to tristrip's vertex buffer:
-	hr = DXUTGetD3D9Device()->SetStreamSource(0, vb, 0, sizeof(BoyVertex));
+	hr = mD3D9Device->SetStreamSource(0, vb, 0, sizeof(BoyVertex));
 	if(FAILED(hr)) return;
 
 	// set texture to NULL:
-	hr = DXUTGetD3D9Device()->SetTexture(0,NULL);
+	hr = mD3D9Device->SetTexture(0,NULL);
 	if(FAILED(hr)) return;
 
 	// render from vertex buffer:
-	hr = DXUTGetD3D9Device()->DrawPrimitive(D3DPT_LINELIST, 0, 1);
+	hr = mD3D9Device->DrawPrimitive(D3DPT_LINELIST, 0, 1);
 	if(FAILED(hr)) return;
 
 	// release the vertex buffer:
@@ -801,10 +537,10 @@ void WinD3DInterface::assertSuccess(HRESULT hr)
 //#ifdef _DEBUG
 	if (hr<0)
 	{
-		const WCHAR *err = DXGetErrorString(hr);
+		//const WCHAR *err = DXGetError(hr);
 		//const WCHAR *desc = DXGetErrorDescription(hr);
-		wprintf(err);
-		printf("\n");
+		//wprintf(err);
+		//printf("\n");
 		//wprintf(desc);
 		//printf("\n");
 	}
@@ -865,7 +601,7 @@ IDirect3DTexture9 *WinD3DInterface::loadTexture(const char *filenameUtf8, D3DXIM
 
 	// load the texture:
 	HRESULT hr = D3DXCreateTextureFromFileEx(
-		DXUTGetD3D9Device(), // device
+		mD3D9Device, // device
 		filename.wc_str(), // file to load from
 		width, // width
 		height, // height
@@ -898,7 +634,7 @@ IDirect3DVertexBuffer9 *WinD3DInterface::createVertexBuffer(int numVerts)
 	// create the vertex buffer:
 	IDirect3DVertexBuffer9 *vb;
 	int byteCount = sizeof(BoyVertex) * numVerts;
-	HRESULT hr = DXUTGetD3D9Device()->CreateVertexBuffer(
+	HRESULT hr = mD3D9Device->CreateVertexBuffer(
 		byteCount,
 		D3DUSAGE_WRITEONLY,
 		BOYFVF,
@@ -915,7 +651,7 @@ void WinD3DInterface::initD3D()
 {
 	// get some device capabilities:
 	D3DCAPS9 caps;
-	DXUTGetD3D9Device()->GetDeviceCaps(&caps);
+	mD3D9Device->GetDeviceCaps(&caps);
 	mMaxTextureWidth = caps.MaxTextureWidth;
 	mMaxTextureHeight = caps.MaxTextureHeight;
 	mPow2TextureSize = (caps.TextureCaps & D3DPTEXTURECAPS_POW2) != 0;
@@ -928,66 +664,66 @@ void WinD3DInterface::initD3D()
 		(FLOAT)mPresentationParameters.BackBufferHeight,
 		(FLOAT)-1000,
 		(FLOAT)+1000);
-	HRESULT hr = DXUTGetD3D9Device()->SetTransform(D3DTS_PROJECTION,&projection);
+	HRESULT hr = mD3D9Device->SetTransform(D3DTS_PROJECTION,&projection);
 	assert(!FAILED(hr));
 
 	// set world / view matrices to identity:
 	D3DXMATRIX identity;
 	D3DXMatrixIdentity(&identity);
-	DXUTGetD3D9Device()->SetTransform(D3DTS_WORLD, &identity);
-	DXUTGetD3D9Device()->SetTransform(D3DTS_VIEW, &identity);
+	mD3D9Device->SetTransform(D3DTS_WORLD, &identity);
+	mD3D9Device->SetTransform(D3DTS_VIEW, &identity);
 
 	// turn off lighting:
-    DXUTGetD3D9Device()->SetRenderState(D3DRS_LIGHTING, false);
+    mD3D9Device->SetRenderState(D3DRS_LIGHTING, false);
 
 	// set the flexible vertex format:
-	hr = DXUTGetD3D9Device()->SetFVF(BOYFVF);
+	hr = mD3D9Device->SetFVF(BOYFVF);
 	if(FAILED(hr)) return;
 
 	// set up texture blending parameters:
-	hr = DXUTGetD3D9Device()->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
+	hr = mD3D9Device->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+	hr = mD3D9Device->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
+	hr = mD3D9Device->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);
+	hr = mD3D9Device->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_DIFFUSE);
+	hr = mD3D9Device->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_DIFFUSE);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_TEXTURE);
+	hr = mD3D9Device->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_TEXTURE);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetSamplerState(0,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR);
+	hr = mD3D9Device->SetSamplerState(0,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetSamplerState(0,D3DSAMP_MINFILTER,D3DTEXF_LINEAR);
+	hr = mD3D9Device->SetSamplerState(0,D3DSAMP_MINFILTER,D3DTEXF_LINEAR);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetSamplerState(0,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP);
+	hr = mD3D9Device->SetSamplerState(0,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP);
 	if(FAILED(hr)) return;
-	hr = DXUTGetD3D9Device()->SetSamplerState(0,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP);
+	hr = mD3D9Device->SetSamplerState(0,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP);
 	if(FAILED(hr)) return;
 }
 
 void WinD3DInterface::setTransform(D3DXMATRIX &xform)
 {
 	// set the new transform:
-	DXUTGetD3D9Device()->SetTransform(D3DTS_WORLD, &xform);
+	mD3D9Device->SetTransform(D3DTS_WORLD, &xform);
 }
 
 void WinD3DInterface::setSamplerState(D3DSAMPLERSTATETYPE state, DWORD value)
 {
-	DXUTGetD3D9Device()->SetSamplerState(0,state,value);
+	mD3D9Device->SetSamplerState(0,state,value);
 }
 
 void WinD3DInterface::setRenderState(D3DRENDERSTATETYPE state, DWORD value)
 {
-	HRESULT hr = DXUTGetD3D9Device()->SetRenderState(state,value);
+	HRESULT hr = mD3D9Device->SetRenderState(state,value);
 	assertSuccess(hr);
 }
 
 DWORD WinD3DInterface::getRenderState(D3DRENDERSTATETYPE state)
 {
 	DWORD value;
-	DXUTGetD3D9Device()->GetRenderState(state,&value);
+	mD3D9Device->GetRenderState(state,&value);
 	return value;
 }
 
@@ -998,13 +734,13 @@ void WinD3DInterface::setClipRect(int x, int y, int width, int height)
 	rect.right = x+width;
 	rect.top = y;
 	rect.bottom = y+height;
-	DXUTGetD3D9Device()->SetScissorRect(&rect);
+	mD3D9Device->SetScissorRect(&rect);
 }
 
 void WinD3DInterface::dumpInfo(std::ofstream &file)
 {
 	D3DCAPS9 caps;
-	DXUTGetD3D9Device()->GetDeviceCaps(&caps);
+	mD3D9Device->GetDeviceCaps(&caps);
 
 	file << "type: ";
 	switch (caps.DeviceType)
@@ -1167,5 +903,15 @@ void WinD3DInterface::handleResetDevice()
 	initD3D();
 
 	// notify the game of the device reset:
-	mGame->windowResized(0,0,DXUTGetWindowWidth(),DXUTGetWindowHeight());
+	mGame->windowResized(0,0,getWidth(),getHeight());
+}
+
+IDirect3DDevice9* WinD3DInterface::GetD3DDevice()
+{
+	return mD3D9Device;
+}
+
+SDL_Window* WinD3DInterface::GetSDLWindow()
+{
+	return mWindow;
 }

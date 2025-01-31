@@ -12,8 +12,6 @@
 #include "Boy/Mouse.h"
 #include "Boy/ResourceManager.h"
 
-using namespace Boy;
-
 Wog *Wog::gInstance = NULL;
 
 Wog::Wog()
@@ -49,10 +47,10 @@ void Wog::destroy()
 
 void Wog::preInitLoad()
 {
-	Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Environment::instance()->getCryptoKey());
-	Environment::instance()->getResourceManager()->loadResourceGroup("bootstrap");
-	Environment::instance()->getResourceManager()->loadResourceGroup("init");
-	Environment::instance()->showSystemMouse(false);
+	Boy::Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Environment::instance()->getCryptoKey());
+	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("bootstrap");
+	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("init");
+	Boy::Environment::instance()->showSystemMouse(false);
 }
 
 void Wog::preInitdraw(Graphics *g)
@@ -62,7 +60,7 @@ void Wog::preInitdraw(Graphics *g)
 
 void Wog::init()
 {
-	Environment::instance()->sleep(500);
+	Boy::Environment::instance()->sleep(500);
 	PlayerProfileFactory::init();
 	LevelFactory::init();
 	/*
@@ -83,9 +81,9 @@ void Wog::init()
 
 void Wog::load()
 {
-	Environment::instance()->debugLog("loading game...\n");
-	Environment::instance()->getResourceManager()->loadResourceGroup("common");
-	Environment::instance()->debugLog("loading \'common\' complete.\n");
+	Boy::Environment::instance()->debugLog("loading game...\n");
+	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("common");
+	Boy::Environment::instance()->debugLog("loading \'common\' complete.\n");
 	// LevelFactory::instance()->loadLevel("MapWorldView", true);
 	// Environment::instance()->debugLog("loading level complete.\n");
 	// TODO: A bunch more stuff, need to make a vtable in ghidra for the Wog Class so it'll actually show the calls

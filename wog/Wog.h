@@ -34,9 +34,9 @@ public:
 
 private:
 	static Wog *gInstance;
-	//Model *mModel;
-	//Controller *mController;
-	//WogRenderer *mRenderer;
+	Model *mModel;
+	Controller *mController;
+	WogRenderer *mWogRenderer;
 	//StatsAndAchievements *mStatsAndAchivements;
 
 };

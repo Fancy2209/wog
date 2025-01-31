@@ -3,8 +3,22 @@
 #include <assert.h>
 #include <string>
 
+#include "Model.h"
+#include "Controller.h"
+
 #include "PlayerProfileFactory.h"
 #include "LevelFactory.h"
+#include "SceneFactory.h"
+#include "AnimationFactory.h"
+#include "BallFactory.h"
+#include "MovieFactory.h"
+#include "IslandFactory.h"
+#include "MaterialFactory.h"
+#include "EffectsFactory.h"
+#include "WogRenderer.h"
+#include "GooBall.h"
+#include "LevelModel.h"
+#include "Particle.h"
 
 #include "Boy/Environment.h"
 #include "Boy/GamePad.h"
@@ -18,13 +32,14 @@ Wog::Wog()
 {
 	gInstance = this;
 	BoyLib::Messenger::init();
-	// mModel = new Model();
-	// mController = new Controller();
-	// mStatsAndAchivements = new StatsAndAchivements();
+	mModel = new Model();
+	mController = new Controller();
+	//mStatsAndAchivements = new StatsAndAchivements();
 }
 
 Wog::~Wog()
 {
+	// TODO
 }
 
 Wog *Wog::instance()
@@ -47,6 +62,7 @@ void Wog::destroy()
 
 void Wog::preInitLoad()
 {
+	Boy::Environment::instance()->disableFullScreenToggle();
 	Boy::Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Boy::Environment::instance()->getCryptoKey());
 	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("bootstrap");
 	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("init");
@@ -63,7 +79,6 @@ void Wog::init()
 	Boy::Environment::instance()->sleep(500);
 	PlayerProfileFactory::init();
 	LevelFactory::init();
-	/*
 	SceneFactory::init();
 	AnimationFactory::init();
 	BallFactory::init();
@@ -71,12 +86,11 @@ void Wog::init()
 	IslandFactory::init();
 	MaterialFactory::init("properties/materials.xml");
 	EffectsFactory::init("properties/fx.xml");
-	mRenderer = new WogRenderer();
-	Environment::instance()->UNK1(0);
+	mWogRenderer = new WogRenderer();
+	Boy::Environment::instance()->getGraphics()->setClearZ(0);
 	GooBall::init();
   	LevelModel::init();
   	Particle::init();
-	*/
 }
 
 void Wog::load()
@@ -84,8 +98,8 @@ void Wog::load()
 	Boy::Environment::instance()->debugLog("loading game...\n");
 	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("common");
 	Boy::Environment::instance()->debugLog("loading \'common\' complete.\n");
-	// LevelFactory::instance()->loadLevel("MapWorldView", true);
-	// Environment::instance()->debugLog("loading level complete.\n");
+	LevelFactory::instance()->loadLevel("MapWorldView", true);
+	Boy::Environment::instance()->debugLog("loading level complete.\n");
 	// TODO: A bunch more stuff, need to make a vtable in ghidra for the Wog Class so it'll actually show the calls
 	// Or it'll be pain to read the code
 

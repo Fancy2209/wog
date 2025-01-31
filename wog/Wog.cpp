@@ -47,13 +47,13 @@ void Wog::destroy()
 
 void Wog::preInitLoad()
 {
-	Boy::Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Environment::instance()->getCryptoKey());
+	Boy::Environment::instance()->getResourceManager()->parseResourceFile("properties/resources.xml", Boy::Environment::instance()->getCryptoKey());
 	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("bootstrap");
 	Boy::Environment::instance()->getResourceManager()->loadResourceGroup("init");
 	Boy::Environment::instance()->showSystemMouse(false);
 }
 
-void Wog::preInitdraw(Graphics *g)
+void Wog::preInitdraw(Boy::Graphics *g)
 {
 	// Empty on purpose, game left it empty too
 }
@@ -102,7 +102,7 @@ void Wog::update(float dt)
 
 }
 
-void Wog::draw(Graphics *g)
+void Wog::draw(Boy::Graphics *g)
 {
 	// TODO
 
